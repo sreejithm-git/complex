@@ -1,0 +1,23 @@
+sudo: required
+services:
+        - docker
+
+before_install:
+        - docker build -t sreejith1/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+        - docker run sreejith1/react-test npm test -- --coverage
+
+after_success:
+        - docker build -t sreejith1/complex-client ./client
+        - docker build -t sreejith1/complex-nginx ./nginx
+        - docker build -t sreejith1/complex-server ./server
+        - docker build -t sreejith1/complex-worker ./worker
+
+        - echo "$DOCKER_PASSWORD" | docker login -u "DOCKER_ID" --password-stdin
+
+        - docker push sreejith1/complex-client
+        - docker push sreejith1/complex-nginx
+        - docker push sreejith1/complex-server
+        - docker push sreejith1/complex-worker
+
