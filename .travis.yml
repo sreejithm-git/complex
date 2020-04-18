@@ -1,3 +1,4 @@
+language: generic
 sudo: required
 services:
         - docker
@@ -6,7 +7,7 @@ before_install:
         - docker build -t sreejith1/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-        - docker run sreejith1/react-test npm test -- --coverage
+        - docker run -e CI=true sreejith1/react-test npm test
 
 after_success:
         - docker build -t sreejith1/complex-client ./client
